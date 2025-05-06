@@ -1,0 +1,10 @@
+// PDA Example
+digraph {
+	q0 [label="q0 (Start)"]
+	q1 [label="q1 (Stack operation)"]
+	q_accept [label="q_accept (Accept)"]
+	q0 -> q0 [label="a, ε -> X"]
+	q0 -> q1 [label="b, X -> ε"]
+	q1 -> q1 [label="b, X -> ε"]
+	q1 -> q_accept [label="ε, ε -> ε"]
+}

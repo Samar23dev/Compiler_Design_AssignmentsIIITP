@@ -1,0 +1,92 @@
+PS C:\Users\Samar Mittal\Desktop\Compiler LAb\lab9> & "C:/Users/Samar Mittal/AppData/Local/Programs/Python/Python312/python.exe" "c:/Users/Samar Mittal/Desktop/Compiler LAb/lab9/temp.py"
+Original Grammar:
+E → T G
+G → + T G
+G → #
+T → F H
+H → * F H
+H → #
+F → ( E )
+F → id
+
+Grammar after removing left recursion:
+F → ( E )
+F → id
+H → * F H
+H → #
+E → T G
+G → + T G
+G → #
+T → F H
+
+Grammar after removing left factoring:
+F → ( E )
+F → id
+H → * F H
+H → #
+E → T G
+G → + T G
+G → #
+T → F H
+
+SYMBOLS   FIRST     FOLLOW
+F         (,id      $,),*,+
+H         #,*       $,),+
+E         (,id      $,)
+G         #,+       $,)
+T         (,id      $,),+
+
+Predictive Parsing Table:
+
+NT/T        id          +           $           )           *           (
+------------------------------------------------------------------------------------
+F           F → id                                                      F → ( E )
+------------------------------------------------------------------------------------
+H                       H → #       H → #       H → #       H → * F H
+------------------------------------------------------------------------------------
+E           E → T G                                                     E → T G
+------------------------------------------------------------------------------------
+G                       G → + T G   G → #       G → #
+------------------------------------------------------------------------------------
+T           T → F H                                                     T → F H
+------------------------------------------------------------------------------------
+Parsing: id+id*id
+
+Stack                         Input               Action
+======================================================================
+$ E                           id+id*id$           E → T G
+$ G T                         id+id*id$           T → F H
+$ G H F                       id+id*id$           F → id
+$ G H id                      id+id*id$           Match id
+$ G H                         +id*id$             H → #
+$ G                           +id*id$             G → + T G
+$ G T +                       +id*id$             Match +
+$ G T                         id*id$              T → F H
+$ G H F                       id*id$              F → id
+$ G H id                      id*id$              Match id
+$ G H                         *id$                H → * F H
+$ G H F *                     *id$                Match *
+$ G H F                       id$                 F → id
+$ G H id                      id$                 Match id
+$ G H                         $                   H → #
+$ G                           $                   G → #
+$                             $                   Match $
+
+Input 'id+id*id' is accepted
+--------------------------------------------------
+Parsing: id+*id
+
+Stack                         Input               Action
+======================================================================
+$ E                           id+*id$             E → T G
+$ G T                         id+*id$             T → F H
+$ G H F                       id+*id$             F → id
+$ G H id                      id+*id$             Match id
+$ G H                         +*id$               H → #
+$ G                           +*id$               G → + T G
+$ G T +                       +*id$               Match +
+$ G T                         *id$                Error: No entry for (T, *)
+
+Input 'id+*id' is not accepted
+--------------------------------------------------
+PS C:\Users\Samar Mittal\Desktop\Compiler LAb\lab9>

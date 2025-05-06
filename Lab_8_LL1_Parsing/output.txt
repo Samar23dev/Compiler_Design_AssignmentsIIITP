@@ -1,0 +1,80 @@
+PS C:\Users\Samar Mittal\Desktop\Compiler LAb\lab8> & "C:/Users/Samar Mittal/AppData/Local/Programs/Python/Python312/python.exe" "c:/Users/Samar Mittal/Desktop/Compiler LAb/lab8/m3.py"
+
+Rules: 
+
+E->[['T', 'G']]
+G->[['+', 'T', 'G'], ['#']]
+T->[['F', 'H']]
+H->[['*', 'F', 'H'], ['#']]
+F->[['(', 'E', ')'], ['id']]        
+
+After elimination of left recursion:
+
+E->[['T', 'G']]
+G->[['+', 'T', 'G'], ['#']]
+T->[['F', 'H']]
+H->[['*', 'F', 'H'], ['#']]
+F->[['(', 'E', ')'], ['id']]        
+
+After left factoring:
+
+E->[['T', 'G']]
+G->[['+', 'T', 'G'], ['#']]
+T->[['F', 'H']]
+H->[['*', 'F', 'H'], ['#']]
+F->[['(', 'E', ')'], ['id']]
+
+Firsts and Follow Result table
+
+Non-Terminal    First           Follow
+E               {'id', '('}     {')', '$'}
+G               {'#', '+'}      {')', '$'}
+T               {'id', '('}     {')', '$', '+'}
+H               {'#', '*'}      {')', '$', '+'}
+F               {'id', '('}     {')', '$', '*', '+'}
+
+Generated parsing table:
+
+          id           +           *           (           )           $
+E       E->T G                              E->T G
+G                 G->+ T G                                G->#        G->#
+T       T->F H                              T->F H
+H                     H->#    H->* F H                    H->#        H->#
+F        F->id                            F->( E )
+
+Validate String => id + id * id
+
+               Stack        Buffer String               Action
+                 E $       $ id * id + id         T[E][id] = E->T G
+               T G $       $ id * id + id         T[T][id] = T->F H
+             F H G $       $ id * id + id          T[F][id] = F->id
+            id H G $       $ id * id + id           Matched:id
+               H G $          $ id * id +            T[H][+] = H->#
+                 G $          $ id * id +        T[G][+] = G->+ T G
+             + T G $          $ id * id +            Matched:+
+               T G $            $ id * id         T[T][id] = T->F H
+             F H G $            $ id * id          T[F][id] = F->id
+            id H G $            $ id * id           Matched:id
+               H G $               $ id *        T[H][*] = H->* F H
+           * F H G $               $ id *            Matched:*
+             F H G $                 $ id          T[F][id] = F->id
+            id H G $                 $ id           Matched:id
+               H G $                    $            T[H][$] = H->#
+                 G $                    $            T[G][$] = G->#
+                   $                    $                Valid
+
+Valid String!
+
+Validate String => id +  * id
+
+               Stack        Buffer String               Action
+                 E $          $ id * + id         T[E][id] = E->T G
+               T G $          $ id * + id         T[T][id] = T->F H
+             F H G $          $ id * + id          T[F][id] = F->id
+            id H G $          $ id * + id           Matched:id
+               H G $             $ id * +            T[H][+] = H->#
+                 G $             $ id * +        T[G][+] = G->+ T G
+             + T G $             $ id * +            Matched:+
+
+Invalid String! No rule at Table[T][*].
+PS C:\Users\Samar Mittal\Desktop\Compiler LAb\lab8>
